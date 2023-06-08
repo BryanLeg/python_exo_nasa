@@ -1,5 +1,5 @@
 import random
-import math
+from math import sqrt
 random.seed(42)
 
 class Tree:
@@ -33,40 +33,6 @@ class Tree:
         result_list.append(self.value)
         return result_list
     
-    def get_paths(self)  -> list:
-        list_path = [self.value]
-        if not self.is_leaf():
-            new_list_path = []
-            for child in self.children:
-                retour_child = child.get_paths()
-                copy_path = (list_path.copy() + retour_child)
-                new_list_path += copy_path
-            return new_list_path
-        return list_path
-
-
-
-    # def get_paths(self)  -> list:
-    #     list_path = [self.value]
-    #     if not self.is_leaf():
-    #         new_list_path = []
-    #         for child in self.children:
-    #             copy_path = (list_path.copy() + child.get_paths())
-    #             new_list_path += copy_path
-    #         return new_list_path
-    #     return list_path
-
-    # def get_paths(self)  -> list:
-    #     list_path = self.value
-    #     if not self.is_leaf():
-    #         new_list_path = {}
-    #         for child in self.children:
-    #             list_path = list_path.copy()
-    #             list_path.update(child.get_paths())
-    #             new_list_path.update(list_path)
-    #         return new_list_path
-    #     return list_path
-
     def bfs(self) -> list:
         queue = [self]
         result = []
@@ -93,10 +59,47 @@ class Tree:
             positions.append({i + 1: (random.randrange(5000), random.randrange(5000))})
         self.add_floor(positions)
 
+    def get_paths(self)  -> list:
+        list_path = [self.value]
+        if not self.is_leaf():
+            new_list_path = []
+            for child in self.children:
+                retour_child = child.get_paths()
+                for item in retour_child: 
+                    if type(item) != list:
+                        copy_path = (list_path.copy() + [item])
+                    else:
+                        copy_path = (list_path.copy() + item)
+                    
+                    new_list_path.append(copy_path)
+            return new_list_path
+        return list_path
     
+    def get_smallest_distance(self) -> list:
+        paths = self.get_paths()
+        distances = []
+        for path in paths:
+            distance = 0
+            temp_list = []
+            for point in path:
+                position = []
+                for value in point.values():
+                    position = value
+
+                if len(temp_list) > 0:
+                    distance += sqrt((position[0] - temp_list[0])**2 + (position[1] - temp_list[1])**2)
+                temp_list = position
+            distances.append(distance)
+        min_distance = distances.index(min(distances))
+        smallest_path = paths[min_distance]
+        return smallest_path, min(distances)
+
+
+
+
 root = Tree({0: (0, 0)})
 root.create_tree(3)
-print(root.get_paths())
+print(root.get_smallest_distance())
 
 
 
