@@ -75,7 +75,7 @@ class Tree:
             return new_list_path
         return list_path
     
-    def get_smallest_distance(self) -> list:
+    def get_shortest_path(self) -> list:
         paths = self.get_paths()
         distances = []
         for path in paths:
@@ -90,16 +90,16 @@ class Tree:
                     distance += sqrt((position[0] - temp_list[0])**2 + (position[1] - temp_list[1])**2)
                 temp_list = position
             distances.append(distance)
-        min_distance = distances.index(min(distances))
-        smallest_path = paths[min_distance]
-        return smallest_path, min(distances)
+        shortest_distance = min(distances)
+        shortest_path = paths[distances.index(shortest_distance)]
+        return shortest_path, shortest_distance
 
 
 
 
 root = Tree({0: (0, 0)})
-root.create_tree(3)
-print(root.get_smallest_distance())
+root.create_tree(4)
+print(root.get_shortest_path())
 
 
 
